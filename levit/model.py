@@ -265,6 +265,7 @@ def LeViT(
     dim_key=32,
     dim_value=64,
     dropout=0.0,
+    activation=hardswish,
     norm_free=False,
     name=None,
     **kwargs,
@@ -325,5 +326,8 @@ def LeViT(
             fmap_size = ceil(fmap_size / 2)
 
     levit = K.Sequential(layers=layers, name=name, **kwargs)
+    for layer in levit.layers:
+        if isinstance(layer, L.Activation) and layer.activation == hardswish:
+            layer.activation = activation
     levit(tf.random.normal([1, image_size, image_size, 3]))
     return levit
